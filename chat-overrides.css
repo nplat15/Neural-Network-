@@ -1,0 +1,1 @@
+.model-stats{grid-template-columns:repeat(4,minmax(0,1fr))}.model-stats span{font-size:9px}.chat-quick button:disabled{opacity:.45;cursor:default}@media(max-width:760px){.model-stats{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:17px}}

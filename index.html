@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f5f6f2" />
+  <title>Clinic Flow | Wait time simulator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="gallery.css" />
+  <link rel="stylesheet" href="chat.css" />
+  <link rel="stylesheet" href="chat-overrides.css" />
+  <link rel="stylesheet" href="views.css" />
+</head>
+<body>
+  <main class="page">
+    <header class="topbar"><a class="brand" href="#top"><span class="brand-mark">+</span> clinic<span>flow</span></a><span class="top-note"><i></i> INTERACTIVE MODEL · DATA-BASED</span></header>
+    <nav class="view-nav" role="tablist" aria-label="Clinic Flow sections">
+      <button class="view-tab active" id="tab-simulator" type="button" role="tab" aria-selected="true" aria-controls="view-simulator" data-view="simulator">01 <span>Simulator</span></button>
+      <button class="view-tab" id="tab-examples" type="button" role="tab" aria-selected="false" aria-controls="view-examples" data-view="examples" tabindex="-1">02 <span>Test examples</span></button>
+      <button class="view-tab" id="tab-chat" type="button" role="tab" aria-selected="false" aria-controls="view-chat" data-view="chat" tabindex="-1">03 <span>Ask the guide</span></button>
+      <button class="view-tab" id="tab-about" type="button" role="tab" aria-selected="false" aria-controls="view-about" data-view="about" tabindex="-1">04 <span>Model notes</span></button>
+    </nav>
+    <div class="page-view" id="view-simulator" role="tabpanel" aria-labelledby="tab-simulator" tabindex="0">
+    <section class="hero" id="top">
+      <div class="hero-copy"><div class="eyebrow"><span>01</span> &nbsp;A CLINIC IN YOUR HANDS</div><h1>What moves<br>the <em>waiting room?</em></h1><p>Adjust the number of staff and people in line. A neural network trained on clinic observations estimates what the wait could look like.</p><a class="jump" href="#simulator">Explore the simulator <span>↓</span></a></div>
+      <div class="hero-art" aria-hidden="true"><div class="art-glow"></div><div class="room-label">LIVE MODEL <span>●</span></div><div class="room"><div class="room-window"><span></span><span></span><span></span></div><div class="counter"><b>CHECK-IN</b><span></span></div><div class="person p1"><i></i><b></b><span></span></div><div class="person p2"><i></i><b></b><span></span></div><div class="person p3"><i></i><b></b><span></span></div><div class="person p4"><i></i><b></b><span></span></div><div class="plant"><i></i><b></b></div><div class="floor-line"></div></div><div class="art-foot"><span>QUEUE / STAFF / TIME</span><span>YOUR SCENARIO →</span></div></div>
+    </section>
+    <section class="sim-section" id="simulator">
+      <div class="section-heading"><div><div class="eyebrow"><span>02</span> &nbsp;CHANGE THE SCENARIO</div><h2>Set the scene.</h2></div><p>The model uses patterns in the data to estimate wait time for a typical visit.</p></div>
+      <div class="sim-grid">
+        <div class="controls card">
+          <div class="card-head"><span class="step">A</span><div><h3>Clinic conditions</h3><p>Move a control to explore.</p></div><button id="reset" class="reset" type="button">Reset ↺</button></div>
+          <label class="slider-label" for="queue"><span><b>People in queue</b><small>Patients waiting to be seen</small></span><output id="queueValue">10</output></label>
+          <input type="range" min="0" max="20" value="10" step="1" id="queue" />
+          <div class="range-ends"><span>0 people</span><span>20 people</span></div>
+          <label class="slider-label staff-label" for="staff"><span><b>Staff on shift</b><small>Available clinic staff</small></span><output id="staffValue">3</output></label>
+          <input type="range" min="1" max="5" value="3" step="1" id="staff" />
+          <div class="range-ends"><span>1 person</span><span>5 people</span></div>
+          <div class="context"><div><label for="hour">TIME OF DAY</label><select id="hour"><option value="8">8:00 AM</option><option value="9">9:00 AM</option><option value="10">10:00 AM</option><option value="11">11:00 AM</option><option value="12">12:00 PM</option><option value="13">1:00 PM</option><option value="14">2:00 PM</option><option value="15">3:00 PM</option><option value="16">4:00 PM</option><option value="17">5:00 PM</option></select></div><div><label for="day">DAY OF WEEK</label><select id="day"><option>Mon</option><option>Tue</option><option>Wed</option><option>Thu</option><option>Fri</option></select></div></div>
+          <div class="within-data"><span>ⓘ</span><div><b>Within the observed range</b><p>Inputs stay within values found in the dataset.</p></div></div>
+        </div>
+        <div class="result card"><div class="result-top"><span class="step">B</span><span class="live"><i></i> PREDICTED WAIT</span></div><div class="wait-number"><strong id="prediction">—</strong><span>minutes</span></div><p class="result-copy">Estimated wait for <b id="summary">10 people in queue with 3 staff</b>.</p><div class="result-divider"></div><div class="chart-title"><div><b>More staff, same queue</b><span>Estimated wait at each staffing level</span></div><span class="chart-key"><i></i> YOUR SETUP</span></div><div id="chart" class="chart" role="img" aria-label="Predicted wait by number of staff"></div><div class="chart-axis"><span>1 staff</span><span>5 staff</span></div><div class="insight"><span class="insight-icon">↗</span><p id="insightText">Change the controls to compare scenarios.</p></div></div>
+      </div>
+    </section>
+    </div>
+    <div class="page-view" id="view-chat" role="tabpanel" aria-labelledby="tab-chat" tabindex="0" hidden>
+    <section class="chat-section" id="ask-model">
+      <div class="chat-intro"><div class="eyebrow"><span>03</span> &nbsp;ASK ABOUT YOUR SCENARIO</div><h2>Make sense<br>of the <em>wait.</em></h2><p>Ask why the estimate changes, compare staffing scenarios, or get help reading the held-out examples.</p><div class="local-note"><span>↗</span><p><b>Runs on your device</b><br>Requires WebGPU and about 1.4 GB of available GPU memory. The first launch downloads around 350 MB of model files; your browser can cache them for later visits.</p></div></div>
+      <div class="chat-card">
+        <div class="chat-head"><div class="assistant-icon">✳</div><div><b>Clinic Flow guide</b><span>Local AI · grounded in this simulator</span></div><span id="chatStatus" class="chat-status">NOT STARTED</span></div>
+        <div id="chatMessages" class="chat-messages" aria-live="polite"><div class="chat-welcome"><span>✳</span><p>Start the local assistant, then ask about your current clinic setup. It can explain the model and compare the scenarios you try.</p></div></div>
+        <div class="chat-quick" id="chatQuick"><button type="button">Where did your data come from?</button><button type="button">How did your model compare with the baseline?</button><button type="button">How well did this model work on a dataset you never tested?</button></div>
+        <form id="chatForm" class="chat-form"><textarea id="chatInput" rows="1" placeholder="Start the assistant to ask a question…" disabled></textarea><button id="chatSend" type="submit" disabled aria-label="Send message">↑</button></form>
+        <div class="chat-footer"><button id="chatStart" type="button">Start local assistant</button><span id="chatProgress">Requires a WebGPU-compatible browser.</span></div>
+      </div>
+    </section>
+    </div>
+    <div class="page-view" id="view-examples" role="tabpanel" aria-labelledby="tab-examples" tabindex="0" hidden>
+    <section class="gallery-section" id="examples">
+      <div class="gallery-intro"><div><div class="eyebrow"><span>04</span> &nbsp;PREDICTIONS THE MODEL HASN'T SEEN</div><h2>How close is<br>the estimate?</h2></div><div class="gallery-copy"><p>These examples come from the held-out records. Filter by queue size, look at the model's estimate, then reveal the recorded wait to compare.</p><div class="discovery"><span>THE DISCOVERY</span><b>Does the model stay close when the waiting room gets busy?</b></div></div></div>
+      <div class="gallery-toolbar"><div class="filter-label">FILTER BY QUEUE</div><div class="filters" role="group" aria-label="Filter examples by queue size"><button class="filter active" data-filter="all">All queues</button><button class="filter" data-filter="short">0–6 people</button><button class="filter" data-filter="medium">7–13 people</button><button class="filter" data-filter="long">14–20 people</button></div><span id="galleryCount" class="gallery-count">400 held-out examples</span></div>
+      <div id="gallery" class="gallery-grid" aria-live="polite"></div>
+      <p class="gallery-note">Each card is a different held-out visit. Predicted waits use the same trained neural network; actual waits were recorded in the dataset. Showing a few examples is useful for exploration, while the test error above summarizes all 400 held-out visits.</p>
+    </section>
+    </div>
+    <div class="page-view" id="view-about" role="tabpanel" aria-labelledby="tab-about" tabindex="0" hidden>
+    <section class="about">
+      <div class="about-heading"><div class="eyebrow"><span>05</span> &nbsp;BEHIND THE PREDICTION</div><h2>A pattern learner,<br><em>not a crystal ball.</em></h2></div>
+      <div class="about-body"><p>The neural network learns combinations of queue size, staffing, time of day, and weekday from <b>2,000 clinic observations</b>. We held out 20% of the records to compare it with a simple baseline that always predicts the training-set average wait.</p><div class="model-stats"><div><strong id="mae">—</strong><span>model MAE · minutes</span></div><div><strong id="baselineMae">—</strong><span>baseline MAE · minutes</span></div><div><strong id="rmse">—</strong><span>model RMSE · minutes</span></div><div><strong id="baselineRmse">—</strong><span>baseline RMSE · minutes</span></div></div><p class="caveat">The dataset source is not documented in the provided files. These holdout results do not show how the model performs on a different clinic or dataset. The data shows patterns, not proof that staffing changes alone cause a specific change in wait time.</p></div>
+    </section>
+    </div>
+    <footer><span>CLINIC FLOW <b>·</b> A WAIT-TIME EXPLORER</span><span>Built from the clinic-wait-times dataset</span></footer>
+  </main>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
