@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 
-const rows = fs.readFileSync(new URL('./clinic-wait-times.csv', import.meta.url), 'utf8').trim().split(/\r?\n/).slice(1).map(line => {
+const rows = fs.readFileSync(new URL('./public/clinic-wait-times.csv', import.meta.url), 'utf8').trim().split(/\r?\n/).slice(1).map(line => {
   const [hour, day, staff, queue, wait] = line.split(',');
   return { x: [Number(hour), Number(staff), Number(queue), ...['Mon','Tue','Wed','Thu','Fri'].map(d => +(day === d))], y: Number(wait) };
 });
@@ -42,7 +42,8 @@ const baselineErrors=test.map(r=>yMean-r.y);
 const baselineMae=baselineErrors.reduce((s,e)=>s+Math.abs(e),0)/baselineErrors.length;
 const baselineRmse=Math.sqrt(baselineErrors.reduce((s,e)=>s+e*e,0)/baselineErrors.length);
 const data={features:['hour','staff','queue','Mon','Tue','Wed','Thu','Fri'],xMean,xStd,yMean,yStd,W1,b1,W2,b2,trainRows:train.length,testRows:test.length,mae,rmse,baseline:{name:'training-mean predictor',mae:baselineMae,rmse:baselineRmse},ranges:{hour:[8,17],staff:[1,5],queue:[0,20]},dataRows:rows.length};
-fs.writeFileSync(new URL('./model.json',import.meta.url),JSON.stringify(data));
+fs.mkdirSync(new URL('./public/',import.meta.url),{recursive:true});
+fs.writeFileSync(new URL('./public/model.json',import.meta.url),JSON.stringify(data));
 const gallery=test.map((r,i)=>({id:i+1,hour:r.x[0],staff:r.x[1],queue:r.x[2],day:['Mon','Tue','Wed','Thu','Fri'][r.x.slice(3).indexOf(1)],actual:Number(r.y.toFixed(1)),predicted:Number(predict(r.x).toFixed(1))}));
-fs.writeFileSync(new URL('./gallery.json',import.meta.url),JSON.stringify(gallery));
+fs.writeFileSync(new URL('./public/gallery.json',import.meta.url),JSON.stringify(gallery));
 console.log(`Saved model: ${train.length} train / ${test.length} test · MAE ${mae.toFixed(1)} min · RMSE ${rmse.toFixed(1)} min · baseline MAE ${baselineMae.toFixed(1)} min / RMSE ${baselineRmse.toFixed(1)} min`);

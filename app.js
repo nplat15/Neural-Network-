@@ -1,4 +1,5 @@
 const $ = id => document.getElementById(id);
+const BASE_URL = import.meta.env.BASE_URL;
 const queue = $('queue'), staff = $('staff'), hour = $('hour'), day = $('day');
 let model;
 let galleryData=[];
@@ -77,10 +78,13 @@ function renderGallery() {
   }).join('');
 }
 Promise.all([
-  fetch('./model.json').then(r=>{if(!r.ok)throw new Error('Could not load model');return r.json();}),
-  fetch('./gallery.json').then(r=>{if(!r.ok)throw new Error('Could not load held-out examples');return r.json();})
-]).then(([loaded,examples])=>{
-  model=loaded;galleryData=examples;$('mae').textContent=loaded.mae.toFixed(1);$('rmse').textContent=loaded.rmse.toFixed(1);$('baselineMae').textContent=loaded.baseline.mae.toFixed(1);$('baselineRmse').textContent=loaded.baseline.rmse.toFixed(1);update();renderGallery();
+  fetch(`${BASE_URL}model.json`).then(r=>{if(!r.ok)throw new Error('Could not load model');return r.json();}),
+  fetch(`${BASE_URL}gallery.json`).then(r=>{if(!r.ok)throw new Error('Could not load held-out examples');return r.json();}),
+  fetch(`${BASE_URL}clinic-wait-times.csv`).then(r=>{if(!r.ok)throw new Error('Could not load the clinic CSV');return r.text();})
+]).then(([loaded,examples,csv])=>{
+  const rowCount=Math.max(0,csv.trim().split(/\r?\n/).length-1);
+  if(rowCount!==loaded.dataRows)throw new Error('The CSV row count does not match the trained model.');
+  model=loaded;galleryData=examples;$('datasetCount').textContent=rowCount.toLocaleString();$('mae').textContent=loaded.mae.toFixed(1);$('rmse').textContent=loaded.rmse.toFixed(1);$('baselineMae').textContent=loaded.baseline.mae.toFixed(1);$('baselineRmse').textContent=loaded.baseline.rmse.toFixed(1);update();renderGallery();
 }).catch(()=>{$('prediction').textContent='Model unavailable';$('insightText').textContent='Run the app from a local web server so it can load the trained model.';});
 [queue,staff,hour,day].forEach(el=>el.addEventListener('input',update));
 [hour,day].forEach(el=>el.addEventListener('change',update));
